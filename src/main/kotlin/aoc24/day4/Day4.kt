@@ -52,16 +52,3 @@ fun part2(rows: List<String>) {
     }
     println("part2: $xmasCount")
 }
-
-val test = """
-    MMMSXXMASM
-    MSAMXMSMSA
-    AMXSXMAAMM
-    MSAMASMSMX
-    XMASAMXAMM
-    XXAMMXXAMA
-    SMSMSASXSS
-    SAXAMASAAA
-    MAMMMXMMMM
-    MXMXAXMASX
-""".trimIndent().split('\n')
