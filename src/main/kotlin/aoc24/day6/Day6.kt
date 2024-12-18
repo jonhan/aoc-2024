@@ -1,5 +1,6 @@
 package se.hjonas.aoc24.day6
 
+import se.hjonas.aoc24.utils.Coordinate
 import se.hjonas.aoc24.utils.readInputLines
 
 enum class Direction(val offsetX: Int, val offsetY: Int) {
@@ -19,8 +20,7 @@ fun Char.toDirection(): Direction? = when (this) {
     else -> null
 }
 
-data class Point(val x: Int, val y: Int)
-data class GuardPosition(val direction: Direction, val point: Point)
+data class GuardPosition(val direction: Direction, val coordinate: Coordinate)
 
 class MapGrid(rows: List<String>) {
     private var startPosition: GuardPosition? = null
@@ -29,13 +29,13 @@ class MapGrid(rows: List<String>) {
     private val cells: List<List<Boolean>> = List(rows.size) { rowIndex ->
         rows[rowIndex].mapIndexed { index, elem ->
             elem.toDirection()?.let {
-                startPosition = GuardPosition(it, Point(index, rowIndex))
+                startPosition = GuardPosition(it, Coordinate(index, rowIndex))
             }
             elem == '#'
         }
     }
 
-    fun isObstacleAt(point: Point): Boolean? = cells.getOrNull(point.y)?.getOrNull(point.x)
+    fun isObstacleAt(coordinate: Coordinate): Boolean? = cells.getOrNull(coordinate.y)?.getOrNull(coordinate.x)
     fun getStartPosition(): GuardPosition = requireNotNull(startPosition)
 }
 
@@ -43,16 +43,16 @@ fun main() {
     val input = readInputLines("day6")
     val grid = MapGrid(input)
     var position = grid.getStartPosition()
-    val visitedPoints = mutableSetOf(position.point)
+    val visitedPoints = mutableSetOf(position.coordinate)
     var canContinue = true
 
     while (canContinue) {
-        var nextPoint = position.point
+        var nextPoint = position.coordinate
         while (grid.isObstacleAt(nextPoint) == false) {
-            position = position.copy(point = nextPoint)
-            visitedPoints.add(position.point)
+            position = position.copy(coordinate = nextPoint)
+            visitedPoints.add(position.coordinate)
 
-            nextPoint = Point(position.point.x + position.direction.offsetX, position.point.y + position.direction.offsetY)
+            nextPoint = Coordinate(position.coordinate.x + position.direction.offsetX, position.coordinate.y + position.direction.offsetY)
         }
         canContinue = grid.isObstacleAt(nextPoint) != null
         position = position.copy(direction = position.direction.moveRight())
